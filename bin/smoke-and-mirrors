@@ -1,0 +1,5 @@
+#!/bin/sh
+# Launch Smoke & Mirrors. Uses XWayland for this app only, so the output can be placed on the projector.
+DIR=$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)
+if [ -x "$DIR/node_modules/.bin/electron" ]; then ELECTRON="$DIR/node_modules/.bin/electron"; else ELECTRON=electron; fi
+exec "$ELECTRON" --ozone-platform=x11 "$DIR" "$@"

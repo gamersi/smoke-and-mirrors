@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' sm: data: blob:; media-src 'self' sm: blob: data:">
+<title>Smoke &amp; Mirrors</title>
+<link rel="stylesheet" href="stage.css">
+<link rel="stylesheet" href="control.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">🎩</span>
+    <div>
+      <div class="brand-name">Smoke &amp; Mirrors</div>
+      <div class="brand-tag">pay no attention to the laptop behind the curtain</div>
+    </div>
+  </div>
+
+  <div class="top-group">
+    <span id="projStatus" class="chip">…</span>
+    <select id="displaySelect" title="Which display is the projector?"></select>
+    <button id="identifyBtn" class="btn ghost" title="Flash a number on every display">Identify</button>
+    <label class="toggle" title="No projector? Open the output as a normal window to rehearse">
+      <input type="checkbox" id="testMode"><span>Test window</span>
+    </label>
+    <label class="toggle" title="Prevent the screen from sleeping while the app runs">
+      <input type="checkbox" id="keepAwake"><span>Keep awake</span>
+    </label>
+  </div>
+
+  <div class="top-group clocks">
+    <span id="clock" class="clock" title="Time of day"></span>
+    <span class="stopwatch" title="Presentation timer (starts automatically on your first reveal)">
+      <span id="stopwatch">00:00</span>
+      <button id="swToggle" class="icon-btn" title="Start / pause">▶</button>
+      <button id="swReset" class="icon-btn" title="Reset">↺</button>
+    </span>
+    <button id="helpBtn" class="icon-btn big" title="Help &amp; shortcuts">?</button>
+  </div>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+
+<main>
+  <section class="monitors">
+    <div class="monitor preview">
+      <div class="mon-head"><span class="tally green">PREVIEW</span><span id="previewName" class="mon-name"></span><span class="mon-hint">next up</span></div>
+      <div class="mon-frame"><div id="previewStage" class="mon-screen"></div></div>
+    </div>
+
+    <div class="switcher">
+      <button id="takeBtn" class="take" title="Send preview to the projector (Space / Enter)">TAKE<small>Space</small></button>
+      <div class="seg" role="group" aria-label="Transition">
+        <button data-tr="cut" title="Hard cut (T toggles)">Cut</button>
+        <button data-tr="fade" title="Crossfade (T toggles)">Fade</button>
+      </div>
+      <label class="dur"><input type="range" id="duration" min="100" max="3000" step="100"><span id="durationLabel"></span></label>
+      <div class="quick">
+        <button id="blackBtn" class="btn quick-btn" title="Instant black — press again to return (B)">Blackout<kbd>B</kbd></button>
+        <button id="freezeBtn" class="btn quick-btn" title="Freeze the current picture — press again to unfreeze (F)">Freeze<kbd>F</kbd></button>
+        <button id="coverBtn" class="btn quick-btn" title="Back to the cover scene (C)">Cover<kbd>C</kbd></button>
+        <button id="revealBtn" class="btn quick-btn reveal" title="Show your real desktop on the projector (D)">Reveal<kbd>D</kbd></button>
+      </div>
+    </div>
+
+    <div class="monitor program">
+      <div class="mon-head"><span class="tally red" id="onAir">ON AIR</span><span id="programName" class="mon-name"></span><span class="mon-hint">audience sees</span></div>
+      <div class="mon-frame"><div id="programStage" class="mon-screen"></div></div>
+    </div>
+  </section>
+
+  <section class="lower">
+    <div class="scenes-panel">
+      <div class="panel-head">
+        <h2>Scenes</h2>
+        <div class="add-buttons">
+          <button class="btn add" data-add="media">+ Image / GIF / Video</button>
+          <button class="btn add" data-add="capture">+ Window / Screen</button>
+          <button class="btn add" data-add="text">+ Text</button>
+          <button class="btn add" data-add="countdown">+ Countdown</button>
+          <button class="btn add" data-add="curtain">+ Curtain</button>
+          <button class="btn add" data-add="color">+ Color</button>
+          <button class="btn add" data-add="pattern">+ Test pattern</button>
+        </div>
+      </div>
+      <div id="sceneGrid" class="scene-grid"></div>
+      <div class="scenes-foot">Click = preview · Double-click / Shift+1‑9 = take directly · 1‑9 = preview · Drag to reorder · Drop files anywhere to add</div>
+    </div>
+    <aside class="inspector" id="inspector"></aside>
+  </section>
+</main>
+
+<footer class="safety">🛟 Close or kill this app at any moment — the projector instantly goes back to your normal desktop. Nothing on your system is changed.</footer>
+
+<div id="toast" class="toast" hidden></div>
+<div id="dropHint" class="drop-hint" hidden><div>Drop images, GIFs or videos to add them as scenes</div></div>
+
+<dialog id="pickerDlg" class="dlg">
+  <div class="dlg-head"><h3>Pick a window or screen</h3><button class="icon-btn" data-close>✕</button></div>
+  <p class="muted">Tip: capture your presentation <b>window</b> — window captures keep working even while it is hidden behind the curtain on the projector.</p>
+  <div id="pickerGrid" class="picker-grid"></div>
+</dialog>
+
+<dialog id="helpDlg" class="dlg wide">
+  <div class="dlg-head"><h3>🎩 How Smoke &amp; Mirrors works</h3><button class="icon-btn" data-close>✕</button></div>
+  <div class="help-cols">
+    <div>
+      <h4>The idea</h4>
+      <p>Keep your projector in normal <b>extend</b> mode. While this app runs, the projector shows a <b>cover</b> (curtain, image, GIF, video, countdown, black…) and your audience never sees you fiddling with windows, logins or slides.</p>
+      <p>Set everything up behind the cover, check it in the monitors, then hit <b>TAKE</b>. Like a TV control room: <span class="g">PREVIEW</span> is what's next, <span class="r">PROGRAM</span> is what the audience sees.</p>
+      <h4>Typical workflows</h4>
+      <ol>
+        <li><b>Reveal:</b> drag your slideshow fullscreen onto the projector (it stays hidden behind the cover), preview “Reveal desktop”, press <kbd>Space</kbd>. The cover fades away and your real projector screen shows — full quality, presenter view works as usual.</li>
+        <li><b>Peek:</b> add a <i>Window / Screen</i> source of that slideshow window and select it as “peek” on the Reveal scene to see what's behind the curtain in the monitors.</li>
+        <li><b>Mirror:</b> add a window as a source and TAKE it to show just that window on the projector — your notifications and other windows stay private.</li>
+      </ol>
+      <h4>Safety</h4>
+      <p>The app never changes display settings and installs nothing. If it closes, crashes or is killed, its window vanishes and the projector shows your desktop exactly as it would without the app. Unplugging the projector closes the output immediately. If a mirrored source disappears while live, the projector falls back to your cover.</p>
+    </div>
+    <div>
+      <h4>Keyboard</h4>
+      <table class="keys">
+        <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>TAKE preview → projector</td></tr>
+        <tr><td><kbd>1</kbd>–<kbd>9</kbd></td><td>load scene into preview</td></tr>
+        <tr><td><kbd>Shift</kbd>+<kbd>1</kbd>–<kbd>9</kbd></td><td>take scene directly</td></tr>
+        <tr><td><kbd>B</kbd></td><td>blackout on / off</td></tr>
+        <tr><td><kbd>F</kbd></td><td>freeze on / off</td></tr>
+        <tr><td><kbd>C</kbd></td><td>back to cover</td></tr>
+        <tr><td><kbd>D</kbd></td><td>reveal desktop</td></tr>
+        <tr><td><kbd>T</kbd></td><td>toggle cut / fade</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>B</kbd></td><td>global blackout*</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>C</kbd></td><td>global cover*</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd></td><td>global take*</td></tr>
+      </table>
+      <p class="muted">* works while another app is focused where the desktop allows it (X11, Windows, macOS; on Wayland it depends on the compositor).</p>
+      <h4>Scene tips</h4>
+      <ul>
+        <li>★ marks the <b>cover</b> — shown when the app starts and as safety fallback.</li>
+        <li><b>Test pattern</b> helps focus and align the beamer and shows its real resolution.</li>
+        <li><b>Countdown</b> starts when it goes live.</li>
+        <li>Edits in the inspector only touch the preview. Press TAKE to push them live.</li>
+      </ul>
+      <label class="toggle"><input type="checkbox" id="autoTimer"><span>Start the presentation timer on the first reveal</span></label>
+    </div>
+  </div>
+</dialog>
+
+<script type="module" src="control.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+/* Shared scene styles — loaded by both the output window and the control window. */
+.stage {
+  position: relative;
+  overflow: hidden;
+  container-type: size;
+  background: #000;
+  user-select: none;
+}
+.stage-output { background: transparent; }
+.stage .layer { position: absolute; inset: 0; }
+.scene {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  overflow: hidden;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+.scene .fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+
+/* broken / no-signal placeholder (never used on the real output) */
+.scene.broken { background: repeating-linear-gradient(45deg, #1a1a1f 0 14px, #222228 14px 28px) !important; }
+.scene.broken::after {
+  content: attr(data-msg);
+  color: #ff8a7a; font-weight: 700; font-size: max(10px, 5cqh);
+  background: rgba(0,0,0,.6); padding: .3em .8em; border-radius: .4em;
+}
+
+/* text + countdown */
+.text-box { text-align: center; padding: 0 6cqw; max-width: 100%; }
+.text-title { font-size: 11cqh; font-weight: 800; line-height: 1.05; letter-spacing: -0.01em; white-space: pre-wrap; text-wrap: balance; }
+.text-sub { font-size: 5cqh; font-weight: 500; opacity: .85; margin-top: 2.4cqh; white-space: pre-wrap; }
+.count-digits { font-size: 28cqh; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.scene-countdown.done .count-digits { animation: sm-pulse 1s ease-in-out infinite; }
+.count-after:empty { display: none; }
+@keyframes sm-pulse { 50% { opacity: .35; } }
+
+/* test pattern */
+.scene.pattern { background: #111 !important; }
+.pattern-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.35) 1px, transparent 1px);
+  background-size: 10cqw 10cqh;
+  background-position: -1px -1px;
+}
+.pattern-bars { position: absolute; left: 20%; right: 20%; top: 38%; height: 24%; display: flex; }
+.pattern-bars > div { flex: 1; }
+.pattern-circle { position: absolute; width: 70cqh; height: 70cqh; border: max(1px, .5cqh) solid #fff; border-radius: 50%; }
+.pattern-corner { position: absolute; width: 8cqh; height: 8cqh; border: max(1px, .6cqh) solid #ffb627; }
+.pattern-corner.tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.pattern-corner.tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.pattern-corner.bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.pattern-corner.br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+.pattern-info {
+  position: absolute; bottom: 12%; color: #fff; font: 700 5cqh/1 ui-monospace, monospace;
+  background: rgba(0,0,0,.7); padding: .3em .6em; border-radius: .3em;
+}
+
+/* theatre curtain */
+.scene.curtain { --velvet: #8f1020; background: #050203 !important; }
+.curtain-half {
+  position: absolute; top: 0; bottom: 0; width: 52%;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.35), transparent 25%, transparent 80%, rgba(0,0,0,.45)),
+    repeating-linear-gradient(90deg,
+      color-mix(in srgb, var(--velvet) 55%, black) 0,
+      var(--velvet) 2.2cqw,
+      color-mix(in srgb, var(--velvet) 80%, white) 3.2cqw,
+      var(--velvet) 4.2cqw,
+      color-mix(in srgb, var(--velvet) 45%, black) 6.4cqw);
+  animation: sm-sway 7s ease-in-out infinite;
+  transform-origin: top center;
+}
+.curtain-half.left { left: 0; border-bottom-right-radius: 40% 6%; }
+.curtain-half.right { right: 0; border-bottom-left-radius: 40% 6%; animation-delay: -3.5s; }
+.curtain-valance {
+  position: absolute; top: 0; left: 0; right: 0; height: 13cqh;
+  background:
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--velvet) 60%, black) 0, var(--velvet) 3cqw, color-mix(in srgb, var(--velvet) 60%, black) 6cqw);
+  box-shadow: 0 1.2cqh 2.5cqh rgba(0,0,0,.6);
+  border-bottom: .9cqh solid #c9a24a;
+  -webkit-mask: radial-gradient(circle 3.2cqw at 3.2cqw 100%, transparent 98%, #000) 0 0 / 6.4cqw 100% repeat-x;
+}
+.curtain-spot {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 45% 55% at 50% 55%, rgba(255,230,170,.18), transparent 70%);
+  pointer-events: none;
+}
+.curtain-text {
+  position: relative; text-align: center; color: #fff6e0;
+  text-shadow: 0 .4cqh 2cqh rgba(0,0,0,.85);
+  padding: 2cqh 4cqw;
+}
+.curtain-text .text-title { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; font-size: 10cqh; }
+@keyframes sm-sway {
+  0%, 100% { transform: skewX(0deg); }
+  50% { transform: skewX(.6deg); }
+}
+
+/* desktop placeholder in the monitors */
+.scene.desktop-ph {
+  background:
+    linear-gradient(135deg, rgba(64,140,255,.25), rgba(30,200,160,.15)),
+    repeating-conic-gradient(#1b1d24 0 25%, #15171c 0 50%) 0 0 / 4cqh 4cqh !important;
+}
+.desktop-label {
+  position: relative; color: #cfe3ff; font-weight: 800; letter-spacing: .12em; font-size: 7cqh;
+  background: rgba(0,0,0,.55); padding: .25em .7em; border-radius: .3em;
+}
+.scene.desktop-ph video + .desktop-label { position: absolute; top: 3cqh; left: 3cqh; font-size: 4cqh; }

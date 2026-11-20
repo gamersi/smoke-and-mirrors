@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Smoke & Mirrors
+GenericName=Projector curtain
+Comment=Keep the projector covered while you set up your presentation
+Exec=/home/simon/Documents/side/projector-app4/bin/smoke-and-mirrors
+Icon=/home/simon/Documents/side/projector-app4/ui/icon.png
+Terminal=false
+Categories=Office;Presentation;AudioVideo;

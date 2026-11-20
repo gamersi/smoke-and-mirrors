@@ -1,0 +1,15 @@
+{
+  "name": "smoke-and-mirrors",
+  "productName": "Smoke & Mirrors",
+  "version": "1.0.0",
+  "description": "Pay no attention to the laptop behind the curtain. Keeps your projector on a cover (curtain/image/GIF/black) while you set up, with preview/program monitors and a TAKE button.",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron --ozone-platform=x11 .",
+    "check": "node --check main.js && node --check preload.js && node --check x11.js && node --check ui/control.js && node --check ui/stage.js && node --check ui/output.js"
+  },
+  "devDependencies": {
+    "electron": "^44.0.0"
+  }
+}
